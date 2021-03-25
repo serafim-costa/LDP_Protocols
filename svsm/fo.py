@@ -2,9 +2,48 @@ import numpy as np
 import xxhash
 
 
+def oue(real_dist, eps):
+    ee = np.exp(eps)
+    p = 0.5
+    q = 1 / ee + 1
+    domain = len(real_dist)
+    noisy_samples = oue_perturb(real_dist, p, q)
+    est_dist = oue_aggregate(noisy_samples, domain, p, q, sum(real_dist))
+    return est_dist
+
+
+def oue_perturb(real_dist, p, q):
+
+    domain = len(real_dist)
+    n = sum(real_dist)
+    perturbed_data = np.zeros(n, dtype=object)
+
+    for k, v in enumerate(real_dist):
+        k_binary = np.zeros(domain)
+        k_binary[k] = 1
+        for _ in range(v):
+            p_sample = np.random.random_sample()
+            q_sample = np.random.random_sample()
+            for j in range(domain):
+                if k_binary[j] == 0 and q_sample <= q:
+                    k_binary[j] = 1
+                elif k_binary[j] == 1 and q_sample <= q:
+                    k_binary[j] = 0
+            perturbed_data[j] += k_binary[j]
+    return perturbed_data
+
+
+def oue_aggregate(perturbed_data, domain, p, q, n):
+    est_dist = np.zeros(domain, dtype=np.int32)
+    for k, v in enumerate(perturbed_data):
+        k_freq = (v / n) - q / (p - q)
+        est_dist[k] = k_freq
+    return est_dist
+
+
 def lh(real_dist, eps):
     p = 0.5
-    g = int(np.exp(eps)) + 1
+    g = np.ceil(np.exp(eps) + 1)
     q = 1 / g
     domain = len(real_dist)
 
@@ -44,8 +83,11 @@ def lh_aggregate(noisy_samples, domain, g, p, q):
             if noisy_samples[i][0] == x:
                 est[v] += 1
 
-    a = 1.0 / (p - q)
-    b = n * q / (p - q)
+    # a = 1.0 / (p - q)
+    # b = n * q / (p - q)
+
+    a = 1.0 / (p - 1/g)
+    b = n/g / (p - 1/g)
     est = a * est - b
 
     return est
@@ -65,7 +107,7 @@ def rr(real_dist, eps):
 
 
 def rr_perturb(real_dist, domain, p):
-    n = sum(real_dist)
+    n = sum(real_dist)  # number of users
     perturbed_datas = np.zeros(n, dtype=np.int)
     counter = 0
     for k, v in enumerate(real_dist):

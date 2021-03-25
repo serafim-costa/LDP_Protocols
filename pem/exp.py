@@ -2,7 +2,7 @@ from data import Data
 from pem import PEM
 
 
-def evaluate(cand_dict, k=0):
+def evaluate(data, cand_dict, k=0):
 	# print('# ==== evaluation ====')
 	# print('# identified ', len(cand_dict))
 	# print('#',)
@@ -21,10 +21,10 @@ def evaluate(cand_dict, k=0):
 	
 	
 def main():
-    data = Data()
-    finder = PEM(data, top_k=32, epsilon=4)
-    cand_dict = finder.find()
-    print(cand_dict)
+	data = Data()
+	finder = PEM(data, top_k=32, epsilon=4)
+	cand_dict = finder.find()
+	print(cand_dict)
 
 
 main()

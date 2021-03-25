@@ -1,8 +1,6 @@
 import heapq
 import math
-
 import numpy as np
-
 import fo
 
 
@@ -15,10 +13,8 @@ class SVSM():
     def find(self):
         n = len(self.data.data)
         single_test_user = int(0.4 * n)
-
         key_list, est_freq = self.find_singleton(single_test_user)
         cand_itemsets = self.find_itemset(key_list, est_freq, single_test_user, n)
-
         return cand_itemsets
 
     def find_singleton(self, single_test_user):

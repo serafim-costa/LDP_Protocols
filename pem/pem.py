@@ -1,7 +1,5 @@
 import math
-
 import numpy as np
-
 import fo
 
 
@@ -9,9 +7,8 @@ class PEM(object):
 
     def __init__(self, data, top_k, epsilon):
         self.data = data
-
         self.k = top_k
-		# step_bit_n should be as large as possible (larger step_bit_n incurs higher computational cost)
+        # step_bit_n should be as large as possible (larger step_bit_n incurs higher computational cost)
         self.step_bit_n = 1
 
     def find(self):
@@ -43,7 +40,7 @@ class PEM(object):
 
             true_counts = np.append(true_counts, [int(group_users[1] - sum(true_counts))])
             est_counts = fo.lh(true_counts, self.args.eps)[:-1]
-			est_counts = fo.filter_top(est_counts, self.k)
+            est_counts = fo.filter_top(est_counts, self.k)
 
             cand_dict = {}
             for cand, index in new_cand_dict.items():

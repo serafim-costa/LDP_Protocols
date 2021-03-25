@@ -8,5 +8,4 @@ def main():
     cand_dict = finder.find()
     print(cand_dict)
 
-
 main()
